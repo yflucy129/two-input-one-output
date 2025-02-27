@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elemental Reaction Simulator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        :root {
+            --primary-bg: #e3e3e3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Press Start 2P', cursive;
+            user-select: none;
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: white;
+            text-align: center;
+            transition: background 0.3s linear;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 0px black;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            gap: 15px;
+        }
+
+        .controls {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        select, button {
+            font-size: 1rem;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 8px;
+            border: 2px solid #fff;
+            background: #444;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        select:hover, button:hover {
+            transform: scale(1.1);
+            background: #666;
+        }
+
+        button {
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        #output {
+            font-size: 1.2rem;
+            margin-top: 15px;
+            text-shadow: 2px 2px black;
+        }
+
+        .image-container {
+            margin-top: 10px;
+        }
+
+        img {
+            width: 450px;
+            height: auto;
+            border-radius: 10px;
+            display: none;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        @keyframes flash {
+            0% { background: red; }
+            100% { background: black; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="controls">
+            <h1>Select Two Elements!</h1>
+            <select id="element1">
+                <option value="Pyro">🔥 Pyro</option>
+                <option value="Hydro">🌊 Hydro</option>
+                <option value="Electro">⚡ Electro</option>
+                <option value="Cryo">❄️ Cryo</option>
+                <option value="Anemo">💨 Anemo</option>
+                <option value="Geo">🪨 Geo</option>
+                <option value="Dendro">🌿 Dendro</option>
+            </select>
+            <select id="element2">
+                <option value="Pyro">🔥 Pyro</option>
+                <option value="Hydro">🌊 Hydro</option>
+                <option value="Electro">⚡ Electro</option>
+                <option value="Cryo">❄️ Cryo</option>
+                <option value="Anemo">💨 Anemo</option>
+                <option value="Geo">🪨 Geo</option>
+                <option value="Dendro">🌿 Dendro</option>
+            </select>
+            <button onclick="generateReaction()">See Reaction</button>
+            <p id="output"></p>
+        </div>
+
+        <div class="image-container">
+            <img id="displayedImage" src="" alt="Elemental Reaction">
+        </div>
+    </div>
+
+    <script>
+        function generateReaction() {
+            const element1 = document.getElementById("element1").value;
+            const element2 = document.getElementById("element2").value;
+            const outputText = document.getElementById("output");
+            const imgElement = document.getElementById("displayedImage");
+
+            const reactions = {
+                "Pyro+Hydro": { text: "🔥 + 💦 = Vaporize!", img: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHRnc2ZwM2N3bHJ5aTR1MDJ4bmg2anBvZnowczJxd2ZkcTdlbnd0dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/1j9lR96X39ZKFml43o/giphy.gif", bg: "#D3E5FF" },
+                "Pyro+Electro": { text: "🔥 + ⚡️ = Overloaded!", img: "https://media.giphy.com/media/3oKIPs1EVbbNZYq7EA/giphy.gif?cid=790b76113o06c3pjv41bm1rkarlo8du4l9zx7807gcuoudg3&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FF4500"},
+                "Pyro+Cryo": { text: "🔥 + ❄️ = Melt!", img: "https://media.giphy.com/media/iTwp6CRtPkMFy/giphy.gif?cid=790b7611i7on29wgm9hgb4511c206svoxo5ikozjz4ih8am4&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FF9966"},
+                "Pyro+Dendro": { text: "🔥 + 🌿 = Burning!", img: "https://media.giphy.com/media/cdJn6JZL30yW8SDdxc/giphy.gif?cid=790b7611x943hgdr9hzpc36ya8mxbdomx4veinjdz4ly5z5m&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FFA500"},
+                "Pyro+Anemo": { text: "🔥 + 💨 = Swirl!", img: "https://media.giphy.com/media/WqgM24U3XnnobDPhUx/giphy.gif?cid=790b76117x6bd7acr98kbcfwp161dtjj7lnros9lxee4mrrd&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#00CED1"},
+                "Pyro+Geo": { text: "🔥 + 🪨 = Crystallize!", img: "https://media.giphy.com/media/Tv7yhvQx9DXX4Ybw4W/giphy.gif?cid=790b76117vzps2phy7sopmgy9h3ihn4wna90ebuimo90myit&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FFD700"},
+
+                "Hydro+Pyro": { text: "💦 + 🔥 = Vaporize!", img: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHRnc2ZwM2N3bHJ5aTR1MDJ4bmg2anBvZnowczJxd2ZkcTdlbnd0dCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/1j9lR96X39ZKFml43o/giphy.gif", bg: "#D3E5FF"},
+                "Hydro+Electro": { text: "💦 + ⚡️ = Electro-Charged!", img: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXE2cmw4NW5nZDF4enRnenYxNjhrdjh5YmxodGdxczlhemJ5cHU3cyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ao8axM9attOgOKX8JP/giphy.gif"},
+                "Hydro+Cryo": { text: "💦 + ❄️ = Frozen!", img: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHJiZWNnbmgzdnA5ZHl2aWtoMGl1MnN6d3c0d2E0dDZ0N2ZkNTd3MyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/d3mlmtNPoxNrt4Bi/giphy.gif", bg: "#ADD8E6"},
+                "Hydro+Dendro": { text: "💦 + 🌿 = Bloom!", img: "https://media.giphy.com/media/fqoKOqx7I5tYc/giphy.gif?cid=790b7611oa1iwrh3075s06iyt5uavp3hb6ij0bcmq8favp2f&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#32CD99"},
+                "Hydro+Anemo": { text: "💦 + 💨 = Swirl!", img: "https://media.giphy.com/media/W01Z6q9EfvfByNlai0/giphy.gif?cid=790b76117x6bd7acr98kbcfwp161dtjj7lnros9lxee4mrrd&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#00CED1"},
+                "Hydro+Geo": { text: "💦 + 🪨 = Crystallize!", img: "https://media.giphy.com/media/1uIx7WQU8FX7G/giphy.gif?cid=790b76117vzps2phy7sopmgy9h3ihn4wna90ebuimo90myit&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FFD700"},
+
+                "Electro+Hydro": { text: "⚡ + 💦 = Electro-Charged!", img: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXE2cmw4NW5nZDF4enRnenYxNjhrdjh5YmxodGdxczlhemJ5cHU3cyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ao8axM9attOgOKX8JP/giphy.gif"},
+                "Electro+Pyro": { text: "⚡️ + 🔥 = Overloaded!", img: "https://media.giphy.com/media/3oKIPs1EVbbNZYq7EA/giphy.gif?cid=790b76113o06c3pjv41bm1rkarlo8du4l9zx7807gcuoudg3&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FF4500"},
+                "Electro+Cryo": { text: "⚡️ + ❄️ = Superconduct!", img: "https://media.giphy.com/media/gw3FZeqeAiKbXM2I/giphy.gif?cid=790b76110vyy2ne93grgkmi6rmukhwzunt0bx8xtzbftmms0&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#6A5ACD"},
+                "Electro+Dendro": { text: "⚡️ + 🌿 = Quicken!", img: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXRtbjJraDY1NnUwbHFyejR4dmFiYnlibHczdTJ4MjYzaHYyZXgxayZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7ZetIsjtbkgNE1I4/giphy.gif", bg: "#A6FF00"},
+                "Electro+Anemo": { text: "⚡️ + 💨 = Swirl!", img: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3g2YmQ3YWNyOThrYmNmd3AxNjFkdGpqN2xucm9zOWx4ZWU0bXJyZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/HmTLatwLWpTQk/giphy.gif", bg: "#00CED1"},
+                "Electro+Geo": { text: "⚡️ + 🪨 = Crystallize!", img: "https://media.giphy.com/media/A1uwghbB69eQ3cOdXz/giphy.gif?cid=ecf05e474eqapkr36b8sw1k64f1dyq1era5xmfbo1yvtqx20&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FFD700"},
+
+                "Cryo+Hydro": { text: "❄️ + 💦 = Frozen!", img: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHJiZWNnbmgzdnA5ZHl2aWtoMGl1MnN6d3c0d2E0dDZ0N2ZkNTd3MyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/d3mlmtNPoxNrt4Bi/giphy.gif", bg: "#ADD8E6"},
+                "Cryo+Pyro": { text: "❄️ + 🔥 = Melt!", img: "https://media.giphy.com/media/iTwp6CRtPkMFy/giphy.gif?cid=790b7611i7on29wgm9hgb4511c206svoxo5ikozjz4ih8am4&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FF9966"},
+                "Cryo+Anemo": { text: "❄️ + 💨 = Swirl!", img: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3g2YmQ3YWNyOThrYmNmd3AxNjFkdGpqN2xucm9zOWx4ZWU0bXJyZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/luhmhS2DLe6FuQWwPa/giphy.gif", bg: "#00CED1"},
+                "Cryo+Geo": { text: "❄️ + 🪨 = Crystallize!", img: "https://media.giphy.com/media/cP3YkY7GUEUq3NTFCc/giphy.gif?cid=790b76117vzps2phy7sopmgy9h3ihn4wna90ebuimo90myit&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FFD700"},
+                "Cryo+Electro": { text: "❄️ + ⚡️ = Superconduct!", img: "https://media.giphy.com/media/gw3FZeqeAiKbXM2I/giphy.gif?cid=790b76110vyy2ne93grgkmi6rmukhwzunt0bx8xtzbftmms0&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#6A5ACD"},
+
+                "Dendro+Pyro": { text: "🌿 + 🔥 = Burning!", img: "https://media.giphy.com/media/cdJn6JZL30yW8SDdxc/giphy.gif?cid=790b7611x943hgdr9hzpc36ya8mxbdomx4veinjdz4ly5z5m&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FFA500"},
+                "Dendro+Hydro": { text: "🌿 + 🌊 = Bloom!", img: "https://media.giphy.com/media/fqoKOqx7I5tYc/giphy.gif?cid=790b7611oa1iwrh3075s06iyt5uavp3hb6ij0bcmq8favp2f&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#32CD99"},
+                "Dendro+Electro": { text: "🌿 + ⚡️ = Quicken!", img: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXRtbjJraDY1NnUwbHFyejR4dmFiYnlibHczdTJ4MjYzaHYyZXgxayZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7ZetIsjtbkgNE1I4/giphy.gif", bg: "#A6FF00"},
+
+                "Anemo+Pyro": { text: "💨 + 🔥  = Swirl!", img: "https://media.giphy.com/media/WqgM24U3XnnobDPhUx/giphy.gif?cid=790b76117x6bd7acr98kbcfwp161dtjj7lnros9lxee4mrrd&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#00CED1"},
+                "Anemo+Hydro": { text: "💨 + 💦  = Swirl!", img: "https://media.giphy.com/media/W01Z6q9EfvfByNlai0/giphy.gif?cid=790b76117x6bd7acr98kbcfwp161dtjj7lnros9lxee4mrrd&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#00CED1"},
+                "Anemo+Electro": { text: "💨 + ⚡️  = Swirl!", img: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3g2YmQ3YWNyOThrYmNmd3AxNjFkdGpqN2xucm9zOWx4ZWU0bXJyZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/HmTLatwLWpTQk/giphy.gif", bg: "#00CED1"},
+                "Anemo+Cryo": { text: "💨 + ❄️  = Swirl!", img: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3g2YmQ3YWNyOThrYmNmd3AxNjFkdGpqN2xucm9zOWx4ZWU0bXJyZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/luhmhS2DLe6FuQWwPa/giphy.gif", bg: "#00CED1"},
+
+                "Geo+Cryo": { text: "🪨 + ❄️  = Crystallize!", img: "https://media.giphy.com/media/cP3YkY7GUEUq3NTFCc/giphy.gif?cid=790b76117vzps2phy7sopmgy9h3ihn4wna90ebuimo90myit&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FFD700"},
+                "Geo+Pyro": { text: "🪨 + 🔥  = Crystallize!", img: "https://media.giphy.com/media/Tv7yhvQx9DXX4Ybw4W/giphy.gif?cid=790b76117vzps2phy7sopmgy9h3ihn4wna90ebuimo90myit&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FFD700"},
+                "Geo+Hydro": { text: "🪨 + 💦  = Crystallize!", img: "https://media.giphy.com/media/1uIx7WQU8FX7G/giphy.gif?cid=790b76117vzps2phy7sopmgy9h3ihn4wna90ebuimo90myit&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FFD700"},
+                "Geo+Electro": { text: "🪨 + ⚡️  = Crystallize!", img: "https://media.giphy.com/media/A1uwghbB69eQ3cOdXz/giphy.gif?cid=ecf05e474eqapkr36b8sw1k64f1dyq1era5xmfbo1yvtqx20&ep=v1_gifs_search&rid=giphy.gif&ct=g", bg: "#FFD700"},
+            };
+
+let key = `${element1}+${element2}`;
+
+if (reactions[key]) {
+    outputText.innerText = reactions[key].text;
+    imgElement.src = reactions[key].img;
+    imgElement.style.display = "block";
+
+    document.body.style.animation = "none";
+    document.body.style.background = reactions[key].bg;
+} else {
+    outputText.innerText = "❌ No Reaction!";
+    imgElement.style.display = "none";
+    document.body.style.animation = "flash 0.5s infinite alternate";
+}
+}
+</script>
+
+</body>
+</html>
